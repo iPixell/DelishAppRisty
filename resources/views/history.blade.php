@@ -8,7 +8,8 @@
 <body>
   @include('template.nav')
   <div class="container mt-5">
-    <h3>Order History</h3>
+    <h5>Order History</h5>
+    <hr />
     @foreach ($data as $item)
       <div class="card p-3 mt-3">
         <h5>Order #{{ $item->id }}</h5>

@@ -19,10 +19,6 @@
         <input type="number" name="price" class="form-control border-dark" />
       </div>
       <div class="mb-3">
-        <label class="fw-bold">Quantity</label>
-        <input type="number" name="qty" class="form-control border-dark" />
-      </div>
-      <div class="mb-3">
         <label class="fw-bold">Image</label>
         <input type="file" name="img" class="form-control border-dark" />
       </div>

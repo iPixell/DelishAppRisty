@@ -15,16 +15,15 @@
         <a class="btn btn-success" href="{{ route('add') }}">Add new product +</a>
       </div>
       <table class="table table-striped table-hover table-bordered align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th class="text-center">No</th>
-          <th class="text-center">Image</th>
-          <th class="text-center">Name</th>
-          <th class="text-center">Price</th>
-          <th class="text-center">Quantity</th>
-          <th class="text-center">Action</th>
-        </tr>
-      </thead>
+        <thead class="table-dark">
+          <tr>
+            <th class="text-center">No</th>
+            <th class="text-center">Image</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
       <tbody>
         @foreach ($data as $item)
         <tr>
@@ -32,15 +31,14 @@
           <td class="text-center"><img src="{{ asset('storage/'.$item->img) }}" width=65></td>
           <td class="text-center">{{ $item->name }}</td>
           <td class="text-center">{{ $item->price }}</td>
-          <td class="text-center">{{ $item->qty }}</td>
           <td class="d-flex justify-content-center gap-2">
-                            <form action="{{ route('delete', $item->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE') <!-- Atau sesuaikan jika pakai POST biasa -->
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                            <a class="btn btn-warning" href="{{ route('edit', $item->id) }}">Edit</a>
-                        </td>
+            <form action="{{ route('delete', $item->id) }}" method="POST">
+              @csrf
+              @method('DELETE') 
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+            <a class="btn btn-warning" href="{{ route('edit', $item->id) }}">Edit</a>
+          </td>
         @endforeach
       </tbody>
     </table>

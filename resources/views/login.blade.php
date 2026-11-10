@@ -7,7 +7,7 @@
     <title></title>
   </head>
   <body class="d-flex justify-content-center align-items-center min-vh-100">
-    <form class="card shadow-sm p-5 form-group rounded-4" action="{{ route('postlogin') }}" method="POST" accept-charset="utf-8">
+    <form class="card shadow-sm p-5 form-group rounded-4" action="{{ route('postlogin') }}" method="POST">
       @csrf
       <h3 class="fw-bold text-center mb-4">Login</h3>
       <div class="mb-3">

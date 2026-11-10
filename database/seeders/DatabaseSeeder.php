@@ -39,14 +39,12 @@ class DatabaseSeeder extends Seeder
       "img" => "image/seblak.jpg",
       "name" => "seblak",
       "price" => 7000,
-      "qty" => 50,
     ]);
     Menu::create([
       "category_id" => 2,
       "img" => "image/matcha.jpg",
       "name" => "matcha",
       "price" => 10000,
-      "qty" => 10,
     ]);
   }
 }

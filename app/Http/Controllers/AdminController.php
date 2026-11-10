@@ -24,14 +24,12 @@ class AdminController extends Controller
       "img" => "required",
       "name" => "required",
       "price" => "required",
-      "qty" => "required",
     ]);
     Menu::create([
       "category_id" => $request->category_id,
       "img" => $request->file("img")->store("image", "public"),
       "name" => $request->name,
       "price" => $request->price,
-      "qty" => $request->qty,
     ]);
     return redirect()->route("admin");
   }
@@ -54,7 +52,6 @@ class AdminController extends Controller
       "img" => "nullable|image",
       "name" => "required",
       "price" => "required",
-      "qty" => "required",
     ]);
 
     if ($request->hasFile("img")) {

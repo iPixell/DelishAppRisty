@@ -17,17 +17,12 @@
             <div class="card-body">
               <h4 class="card-title fw-bold">{{ $item->name }}</h4>
               <p class="card-text">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
-              <p>Stok: {{ $item->qty }}</p>
             </div>
-            @if ($item->qty > 0)
             <form action="{{ route('addcart') }}" method="POST">
               @csrf
               <input type="hidden" name="menu_id" value="{{ $item->id }}">
               <button class="btn btn-primary">Add to Cart</button>
             </form>
-            @else
-              <button class="btn btn-secondary" disabled>Habis</button>
-            @endif
           </div>
         </div>
         @endforeach

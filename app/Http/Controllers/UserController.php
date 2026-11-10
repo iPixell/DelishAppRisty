@@ -66,11 +66,6 @@ class UserController extends Controller
     ]);
 
     [$cart, $data, $total] = $this->cartData();
-    foreach ($data as $i) {
-      if ($i->qty < $cart[$i->id]) {
-        return back()->with("status", "Stok tidak cukup");
-      }
-    }
 
     $order = Order::create(["user_id" => Auth::id(), "total" => $total]);
     $data->each(function ($i) use ($cart, $order) {
@@ -81,7 +76,6 @@ class UserController extends Controller
         "price" => $i->price,
         "subtotal" => $i->price * $cart[$i->id],
       ]);
-      $i->decrement("qty", $cart[$i->id]);
     });
 
     session()->forget("cart");
