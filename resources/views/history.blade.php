@@ -13,7 +13,7 @@
       <div class="card p-3 mt-3">
         <h5>Order #{{ $item->id }}</h5>
         @foreach ($item->items as $detail)
-          <div>{{ $detail->menu->name }} - {{ $detail->qty }} x Rp{{ number_format($detail->price) }}</div>
+          <div>{{ $detail->menu?->name ?? 'Menu dihapus' }} - {{ $detail->qty }} x Rp{{ number_format($detail->price) }}</div>
         @endforeach
         <h5>Total: Rp{{ number_format($item->total) }}</h5>
         <p class="text-success">Order successful</p>

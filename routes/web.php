@@ -37,7 +37,7 @@ Route::middleware("auth")->group(function () {
   Route::get("/admin", [AdminController::class, "admin"])->name("admin");
   Route::get("/add", [AdminController::class, "add"])->name("add");
   Route::post("/add", [AdminController::class, "postadd"])->name("postadd");
-  Route::post("/delete/{menu}", [AdminController::class, "delete"])->name(
+  Route::delete("/delete/{menu}", [AdminController::class, "delete"])->name(
     "delete"
   );
   Route::get("/edit/{menu}", [AdminController::class, "edit"])->name("edit");

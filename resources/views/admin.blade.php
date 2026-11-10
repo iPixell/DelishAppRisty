@@ -34,13 +34,13 @@
           <td class="text-center">{{ $item->price }}</td>
           <td class="text-center">{{ $item->qty }}</td>
           <td class="d-flex justify-content-center gap-2">
-            <form action="{{ route('delete', $item->id) }}" method="POST">
-              @csrf
-              <button class="btn btn-danger">Delete</button>
-            </form>
-            <a class="btn btn-warning" href="{{ route('edit', $item->id) }}">Edit</a>
-          </td>
-        </tr>
+                            <form action="{{ route('delete', $item->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE') <!-- Atau sesuaikan jika pakai POST biasa -->
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                            <a class="btn btn-warning" href="{{ route('edit', $item->id) }}">Edit</a>
+                        </td>
         @endforeach
       </tbody>
     </table>

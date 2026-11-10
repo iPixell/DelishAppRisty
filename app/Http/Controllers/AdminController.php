@@ -37,8 +37,9 @@ class AdminController extends Controller
   }
   public function delete(Menu $menu)
   {
+    $menu->orderItems()->delete();
     $menu->delete();
-    return redirect()->route("admin");
+    return back();
   }
 
   public function edit(Menu $menu)

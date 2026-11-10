@@ -12,95 +12,77 @@ class UserController extends Controller
 {
   public function menu()
   {
-    $data = Menu::all();
-    return view("menu", compact("data"));
+    return view("menu", ["data" => Menu::all()]);
+  }
+
+  private function cartData()
+  {
+    $cart = session("cart", []);
+    $data = Menu::whereIn("id", array_keys($cart))
+      ->get()
+      ->each(function ($i) use ($cart) {
+        $i->jumlah = $cart[$i->id];
+        $i->subtotal = $i->price * $i->jumlah;
+      });
+    return [$cart, $data, $data->sum("subtotal")];
   }
 
   public function addcart(Request $request)
   {
-    $cart = session()->get("cart", []);
-    $id = $request->menu_id;
-
-    if (!isset($cart[$id])) {
-      $cart[$id] = 1;
-    } else {
-      $cart[$id]++;
-    }
-
-    session()->put("cart", $cart);
+    $cart = session("cart", []);
+    $cart[$request->menu_id] = ($cart[$request->menu_id] ?? 0) + 1;
+    session(["cart" => $cart]);
     return redirect()->route("cart");
   }
 
   public function cart()
   {
-    $cart = session()->get("cart", []);
-    $data = Menu::whereIn("id", array_keys($cart))->get();
-    $total = 0;
-
-    foreach ($data as $item) {
-      $item->jumlah = $cart[$item->id];
-      $item->subtotal = $item->price * $item->jumlah;
-      $total += $item->subtotal;
-    }
-
+    [, $data, $total] = $this->cartData();
     return view("cart", compact("data", "total"));
   }
 
   public function updatecart(Request $request)
   {
-    $cart = session()->get("cart", []);
-
-    foreach ($request->qty as $id => $qty) {
-      if ($qty > 0) {
-        $cart[$id] = $qty;
-      }
-    }
-
-    session()->put("cart", $cart);
+    $cart = collect(session("cart", []))
+      ->merge(collect($request->qty)->filter(fn($q) => $q > 0))
+      ->all();
+    session(["cart" => $cart]);
     return redirect()->route("cart");
   }
 
   public function removecart(Menu $menu)
   {
-    $cart = session()->get("cart", []);
-    unset($cart[$menu->id]);
-
-    session()->put("cart", $cart);
+    session()->forget("cart." . $menu->id);
     return redirect()->route("cart");
   }
 
-  public function checkout()
+  public function checkout(Request $request)
   {
-    $cart = session()->get("cart", []);
-    $data = Menu::whereIn("id", array_keys($cart))->get();
-    $total = 0;
-
-    foreach ($data as $item) {
-      if ($item->qty < $cart[$item->id]) {
-        return back()->with("status", "Stok tidak cukup");
-      }
-
-      $total += $item->price * $cart[$item->id];
-    }
-
-    $order = Order::create([
-      "user_id" => Auth::id(),
-      "total" => $total,
+    session([
+      "cart" => array_replace(
+        session("cart", []),
+        array_filter($request->qty ?? [], fn($q) => $q > 0)
+      ),
     ]);
 
-    foreach ($data as $item) {
-      $qty = $cart[$item->id];
+    [$cart, $data, $total] = $this->cartData();
+    foreach ($data as $i) {
+      if ($i->qty < $cart[$i->id]) {
+        return back()->with("status", "Stok tidak cukup");
+      }
+    }
 
+    $order = Order::create(["user_id" => Auth::id(), "total" => $total]);
+    $data->each(function ($i) use ($cart, $order) {
       OrderItem::create([
         "order_id" => $order->id,
-        "menu_id" => $item->id,
-        "qty" => $qty,
-        "price" => $item->price,
-        "subtotal" => $item->price * $qty,
+        "menu_id" => $i->id,
+        "qty" => $cart[$i->id],
+        "price" => $i->price,
+        "subtotal" => $i->price * $cart[$i->id],
       ]);
-
-      $item->decrement("qty", $qty);
-    }
+      $i->decrement("qty", $cart[$i->id]);
+    });
 
     session()->forget("cart");
     return redirect()->route("history");
@@ -108,10 +90,11 @@ class UserController extends Controller
 
   public function history()
   {
-    $data = Auth::user()
-      ->orders()
-      ->with("items.menu")
-      ->get();
-    return view("history", compact("data"));
+    return view("history", [
+      "data" => Auth::user()
+        ->orders()
+        ->with("items.menu")
+        ->get(),
+    ]);
   }
 }
